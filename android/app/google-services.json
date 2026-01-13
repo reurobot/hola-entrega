@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "61551482062",
+    "project_id": "alondraapp-e9c61",
+    "storage_bucket": "alondraapp-e9c61.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:61551482062:android:f23a1cf6e1f1017c1aec9f",
+        "android_client_info": {
+          "package_name": "alondra.multivendor.customer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdrQ1GI_704W0ThhVHTqYE0VDboNOK1TY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
