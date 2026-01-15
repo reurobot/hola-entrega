@@ -18,6 +18,7 @@ import 'package:provider/provider.dart';
 import '../../Helper/Color.dart';
 import '../../Helper/Constant.dart';
 import '../../Helper/String.dart';
+import '../../widgets/radio_group.dart';
 import '../../Model/Section_Model.dart';
 import '../../Provider/productListProvider.dart';
 import '../../Provider/sellerDetailProvider.dart';
@@ -1098,38 +1099,45 @@ class _SearchState extends State<Explore> with TickerProviderStateMixin {
                           Navigator.pop(context, option['returnValue']);
                         });
                       },
-                      child: Column(
-                        children: sortOptions.map((option) {
-                          return RadioListTile<int>(
-                            value: option['value'],
-                            title: Text(
-                              option['label']
-                                  .toString()
-                                  .translate(context: context),
-                              style: TextStyle(
-                                color: _selectedValue == option['value']
-                                    ? Theme.of(context).colorScheme.fontColor
-                                    : Theme.of(context)
-                                        .colorScheme
-                                        .fontColor
-                                        .withValues(alpha: 0.6),
-                                fontSize: textFontSize16,
-                                fontFamily: 'ubuntu',
-                              ),
+                      children: sortOptions.map((option) {
+                        return RadioListTile<int>(
+                          value: option['value'],
+                          groupValue: _selectedValue,
+                          onChanged: (val) {
+                            setState(() {
+                              _selectedValue = val!;
+                              final opt = sortOptions
+                                  .firstWhere((o) => o['value'] == _selectedValue);
+                              Navigator.pop(context, opt['returnValue']);
+                            });
+                          },
+                          title: Text(
+                            option['label']
+                                .toString()
+                                .translate(context: context),
+                            style: TextStyle(
+                              color: _selectedValue == option['value']
+                                  ? Theme.of(context).colorScheme.fontColor
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .fontColor
+                                      .withValues(alpha: 0.6),
+                              fontSize: textFontSize16,
+                              fontFamily: 'ubuntu',
                             ),
-                            activeColor: Theme.of(context).colorScheme.primary,
-                            controlAffinity: ListTileControlAffinity.trailing,
-                          );
-                        }).toList(),
-                      ),
-                    )
+                          ),
+                          activeColor: Theme.of(context).colorScheme.primary,
+                          controlAffinity: ListTileControlAffinity.trailing,
+                        );
+                      }).toList(),
+                    ),
                   ],
                 ),
               ),
             );
           },
-        );
-      },
+        ),
+      ),
     );
   }
 
