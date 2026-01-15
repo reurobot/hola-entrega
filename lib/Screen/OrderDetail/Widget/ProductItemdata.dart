@@ -18,7 +18,7 @@ import '../../../Helper/routes.dart';
 import '../../../Model/Order_Model.dart';
 import '../../../Provider/Order/UpdateOrderProvider.dart';
 import '../../../widgets/desing.dart';
-import '../../../widgets/radio_group.dart';
+import '../../../widgets/radio_group.dart' as custom;
 
 import '../../../widgets/snackbar.dart';
 import 'BottomSheetWidget.dart';
@@ -776,7 +776,7 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                       controller: predefinedReasonScrollController,
                       child: Column(
                         children: [
-                          RadioGroup<int>(
+                          custom.RadioGroup<int>(
                             groupValue: _selectedValue,
                             onChanged: (val) {
                               setState(() {
@@ -807,6 +807,7 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
                                     final element = entry.value;
 
                                     return RadioListTile<int>(
+                                      groupValue: _selectedValue,
                                       value: index,
                                       title: Row(
                                         children: [
@@ -858,6 +859,7 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
 
                                 // "Other" option
                                 RadioListTile<int>(
+                                  groupValue: _selectedValue,
                                   value: state.predefinedReason.length,
                                   title: Text(
                                     'OTHER_LBL'.translate(context: context),

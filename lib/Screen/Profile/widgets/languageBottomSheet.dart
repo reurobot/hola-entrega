@@ -6,7 +6,7 @@ import 'package:eshop_multivendor/cubits/languageCubit.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../widgets/bottomSheet.dart';
-import '../../../widgets/radio_group.dart';
+import '../../../widgets/radio_group.dart' as custom;
 
 class LanguageBottomSheet extends StatefulWidget {
   const LanguageBottomSheet({super.key});
@@ -42,8 +42,8 @@ class _LanguageBottomSheetState extends State<LanguageBottomSheet> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Row(
                 children: [
-                  RadioGroup<String>(
-                    groupValue: selectedLanguageCode,
+                  custom.RadioGroup<String>(
+                    groupValue: selectedLanguageCode ?? '',
                     onChanged: (String? val) {
                       if (val == null) return;
                       setState(() {

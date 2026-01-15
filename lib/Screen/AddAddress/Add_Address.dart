@@ -22,7 +22,7 @@ import '../../widgets/desing.dart';
 import '../../widgets/networkAvailablity.dart';
 import '../../widgets/snackbar.dart';
 import '../../widgets/validation.dart';
-import '../../widgets/radio_group.dart';
+import '../../widgets/radio_group.dart' as custom;
 import '../NoInterNetWidget/NoInterNet.dart';
 
 class AddAddress extends StatefulWidget {
@@ -1319,8 +1319,8 @@ class StateAddress extends State<AddAddress> with TickerProviderStateMixin {
         color: Theme.of(context).colorScheme.white,
         borderRadius: BorderRadius.circular(circularBorderRadius5),
       ),
-      child: RadioGroup<int>(
-        groupValue: selectedType,
+      child: custom.RadioGroup<int>(
+        groupValue: selectedType ?? 1,
         onChanged: (int? val) {
           if (val != null && mounted) {
             setState(() {
@@ -1334,16 +1334,33 @@ class StateAddress extends State<AddAddress> with TickerProviderStateMixin {
         child: Row(
           children: [
             Expanded(
-              child: InkWell(
-                onTap: () =>
-                    RadioGroup.maybeOf<int>(context)?.onChanged.call(1),
-                child: Row(
-                  children: [
-                    Radio<int>(
-                      value: 1,
-                      activeColor: Theme.of(context).colorScheme.fontColor,
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              child: Row(
+                children: [
+                  Radio<int>(
+                    groupValue: selectedType ?? 1,
+                    value: 1,
+                    onChanged: (int? value) {
+                      if (value != null && mounted) {
+                        setState(() {
+                          selectedType = value;
+                          if (value == 1) context.read<AddressProvider>().type = HOME;
+                          if (value == 2) context.read<AddressProvider>().type = OFFICE;
+                          if (value == 3) context.read<AddressProvider>().type = OTHER;
+                        });
+                      }
+                    },
+                    activeColor: Theme.of(context).colorScheme.fontColor,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  Expanded(
+                    child: Text(
+                      'HOME_LBL'.translate(context: context),
+                      style: const TextStyle(fontFamily: 'ubuntu'),
                     ),
+                  ),
+                ],
+              ),
+            ),
                     Expanded(
                       child: Text(
                         'HOME_LBL'.translate(context: context),
@@ -1355,16 +1372,33 @@ class StateAddress extends State<AddAddress> with TickerProviderStateMixin {
               ),
             ),
             Expanded(
-              child: InkWell(
-                onTap: () =>
-                    RadioGroup.maybeOf<int>(context)?.onChanged.call(2),
-                child: Row(
-                  children: [
-                    Radio<int>(
-                      value: 2,
-                      activeColor: Theme.of(context).colorScheme.fontColor,
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              child: Row(
+                children: [
+                  Radio<int>(
+                    groupValue: selectedType ?? 1,
+                    value: 2,
+                    onChanged: (int? value) {
+                      if (value != null && mounted) {
+                        setState(() {
+                          selectedType = value;
+                          if (value == 1) context.read<AddressProvider>().type = HOME;
+                          if (value == 2) context.read<AddressProvider>().type = OFFICE;
+                          if (value == 3) context.read<AddressProvider>().type = OTHER;
+                        });
+                      }
+                    },
+                    activeColor: Theme.of(context).colorScheme.fontColor,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  Expanded(
+                    child: Text(
+                      'OFFICE_LBL'.translate(context: context),
+                      style: const TextStyle(fontFamily: 'ubuntu'),
                     ),
+                  ),
+                ],
+              ),
+            ),
                     Expanded(
                       child: Text(
                         'OFFICE_LBL'.translate(context: context),
@@ -1376,16 +1410,33 @@ class StateAddress extends State<AddAddress> with TickerProviderStateMixin {
               ),
             ),
             Expanded(
-              child: InkWell(
-                onTap: () =>
-                    RadioGroup.maybeOf<int>(context)?.onChanged.call(3),
-                child: Row(
-                  children: [
-                    Radio<int>(
-                      value: 3,
-                      activeColor: Theme.of(context).colorScheme.fontColor,
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              child: Row(
+                children: [
+                  Radio<int>(
+                    groupValue: selectedType ?? 1,
+                    value: 3,
+                    onChanged: (int? value) {
+                      if (value != null && mounted) {
+                        setState(() {
+                          selectedType = value;
+                          if (value == 1) context.read<AddressProvider>().type = HOME;
+                          if (value == 2) context.read<AddressProvider>().type = OFFICE;
+                          if (value == 3) context.read<AddressProvider>().type = OTHER;
+                        });
+                      }
+                    },
+                    activeColor: Theme.of(context).colorScheme.fontColor,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  Expanded(
+                    child: Text(
+                      'OTHER_LBL'.translate(context: context),
+                      style: const TextStyle(fontFamily: 'ubuntu'),
                     ),
+                  ),
+                ],
+              ),
+            ),
                     Expanded(
                       child: Text(
                         'OTHER_LBL'.translate(context: context),

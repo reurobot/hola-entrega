@@ -1,7 +1,7 @@
 import 'package:eshop_multivendor/Helper/Color.dart';
 import 'package:eshop_multivendor/Helper/Constant.dart';
 import 'package:flutter/material.dart';
-import '../../../widgets/radio_group.dart';
+import '../../../widgets/radio_group.dart' as custom;
 
 class SortOptionTile extends StatelessWidget {
   final int value;
@@ -27,12 +27,14 @@ class SortOptionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RadioGroup<int>(
+    return custom.RadioGroup<int>(
       groupValue: groupValue, // the currently selected value
       onChanged: (newValue) {
         onSelected(newValue!, sortBy, orderBy, result, apiParam);
       },
       child: RadioListTile<int>(
+        groupValue: groupValue,
+        value: value,
         title: Text(
           title,
           style: TextStyle(
@@ -46,7 +48,6 @@ class SortOptionTile extends StatelessWidget {
             fontFamily: 'ubuntu',
           ),
         ),
-        value: value,
         activeColor: Theme.of(context).colorScheme.primary,
         controlAffinity: ListTileControlAffinity.trailing,
       ),

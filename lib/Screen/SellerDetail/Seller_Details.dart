@@ -23,7 +23,7 @@ import '../../Provider/sellerDetailProvider.dart';
 import '../../widgets/ButtonDesing.dart';
 import '../../widgets/appBar.dart';
 import '../../widgets/desing.dart';
-import '../../widgets/radio_group.dart';
+import '../../widgets/radio_group.dart' as custom;
 
 import '../../widgets/networkAvailablity.dart';
 import '../NoInterNetWidget/NoInterNet.dart';
@@ -958,7 +958,7 @@ class _SellerProfileState extends State<SellerProfile>
                     Divider(
                       thickness: 0.9,
                     ),
-                    RadioGroup<int>(
+                    custom.RadioGroup<int>(
                       groupValue: _selectedValue,
                       onChanged: (val) {
                         setState(() => _selectedValue = val!);
@@ -985,6 +985,7 @@ class _SellerProfileState extends State<SellerProfile>
                         children: sortOptions.map((option) {
                           final int value = option['value'];
                           return RadioListTile<int>(
+                            groupValue: _selectedValue,
                             value: value,
                             title: Text(
                               option['label']
