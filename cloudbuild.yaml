@@ -1,0 +1,15 @@
+steps:
+  # Install dependencies
+  - name: 'gcr.io/cloud-builders/flutter'
+    args: ['pub', 'get']
+
+  # Build APK
+  - name: 'gcr.io/cloud-builders/flutter'
+    args: ['build', 'apk', '--release']
+
+  # Optional: Upload to Firebase App Distribution (uncomment and configure if needed)
+  # - name: 'gcr.io/cloud-builders/firebase'
+  #   args: ['appdistribution:distribute', 'build/app/outputs/apk/release/app-release.apk', '--app', '$FIREBASE_APP_ID', '--groups', 'testers']
+
+options:
+  machineType: 'E2_HIGHCPU_8'
