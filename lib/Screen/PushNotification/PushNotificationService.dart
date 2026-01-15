@@ -2,7 +2,6 @@
 
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:eshop_multivendor/Helper/Constant.dart';
 import 'package:eshop_multivendor/Helper/routes.dart';
@@ -34,13 +33,12 @@ class PushNotificationService {
 
   static bool initialized = false;
 
-
-
   static final FirebaseNotificationManager _firebaseNotificationManager =
       FirebaseNotificationManager(
           foregroundMessageHandler: foregroundNotification,
           onTapNotification: onTapNotification);
-  static final FlutterLocalNotificationsPlugin notification = FlutterLocalNotificationsPlugin();
+  static final FlutterLocalNotificationsPlugin notification =
+      FlutterLocalNotificationsPlugin();
 
   static void setDeviceToken(
       {bool clearSessionToken = false, SettingProvider? settingProvider}) {
@@ -63,7 +61,6 @@ class PushNotificationService {
     await requestPermission();
     _initializeNotificationChannels();
 
-
     // FirebaseMessaging.onMessage.listen(foregroundNotification);
     // FirebaseMessaging.onBackgroundMessage(backgroundNotification);
 
@@ -83,19 +80,20 @@ class PushNotificationService {
   static void _initializeNotificationChannels() {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/notification');
-    
+
     const DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings(
-          requestAlertPermission: true,
-          requestBadgePermission: true,
-          requestSoundPermission: true,
-        );
-    
-    const InitializationSettings initializationSettings = InitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
+
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
     );
-    
+
     notification.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: _awesomeNotificationTapListener,
@@ -105,7 +103,9 @@ class PushNotificationService {
   @pragma("vm:entry-point")
   static void _awesomeNotificationTapListener(NotificationResponse response) {
     log('Action is a $response');
-    onTapNotification(response.payload != null ? Map<String, dynamic>.fromEntries([MapEntry('', response.payload)]) : {});
+    onTapNotification(response.payload != null
+        ? Map<String, dynamic>.fromEntries([MapEntry('', response.payload)])
+        : {});
   }
 
   static Future<void> requestPermission() async {
@@ -113,8 +113,10 @@ class PushNotificationService {
         await FirebaseMessaging.instance.getNotificationSettings();
 
     if (settings.authorizationStatus != AuthorizationStatus.authorized) {
-      await notification.resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
+      await notification
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.requestNotificationsPermission();
     }
   }
 
@@ -129,19 +131,25 @@ class PushNotificationService {
       priority: Priority.high,
       playSound: true,
     );
-    
-    const DarwinNotificationDetails iOSPlatformChannelSpecifics =
+
+    List<DarwinNotificationAttachment>? attachments;
+    if (payload?['image'] != null) {
+      attachments = [DarwinNotificationAttachment(payload!['image']!)];
+    }
+
+    final DarwinNotificationDetails iOSPlatformChannelSpecifics =
         DarwinNotificationDetails(
       presentAlert: true,
       presentBadge: true,
       presentSound: true,
+      attachments: attachments,
     );
-    
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(
+
+    final NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics,
     );
-    
+
     await notification.show(
       0,
       title,
@@ -156,15 +164,18 @@ class PushNotificationService {
     String? body,
     Map<String, String>? payload,
   }) async {
-    final BigPictureStyleInformation bigPictureStyleInformation =
-        BigPictureStyleInformation(
-      ByteArrayAndroidBitmap.fromBase64String(payload?['image'] ?? ''),
-      largeIcon: ByteArrayAndroidBitmap.fromBase64String(payload?['image'] ?? ''),
-      contentTitle: title,
-      htmlFormatContentTitle: true,
-      htmlFormatSummaryText: true,
-      summaryText: body,
-    );
+    // Create BigPictureStyleInformation conditionally
+    BigPictureStyleInformation? bigPictureStyleInformation;
+    if (payload?['image'] != null && payload!['image']!.isNotEmpty) {
+      bigPictureStyleInformation = BigPictureStyleInformation(
+        ByteArrayAndroidBitmap.fromBase64String(payload['image']!),
+        largeIcon: ByteArrayAndroidBitmap.fromBase64String(payload['image']!),
+        contentTitle: title,
+        htmlFormatContentTitle: true,
+        htmlFormatSummaryText: true,
+        summaryText: body,
+      );
+    }
 
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
@@ -176,22 +187,26 @@ class PushNotificationService {
       playSound: true,
       styleInformation: bigPictureStyleInformation,
     );
-    
-    const DarwinNotificationDetails iOSPlatformChannelSpecifics =
+
+    List<DarwinNotificationAttachment>? attachments;
+    if (payload?['image'] != null) {
+      attachments = [DarwinNotificationAttachment(payload!['image']!)];
+    }
+    final DarwinNotificationDetails iOSPlatformChannelSpecifics =
         DarwinNotificationDetails(
       presentAlert: true,
       presentBadge: true,
       presentSound: true,
-      attachments: payload?['image'] != null ? [
-        DarwinNotificationAttachment(payload!['image']!)
-      ] : null,
+      attachments: payload?['image'] != null
+          ? [DarwinNotificationAttachment(payload!['image']!)]
+          : null,
     );
-    
+
     final NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics,
     );
-    
+
     await notification.show(
       0,
       title,
@@ -209,7 +224,8 @@ class PushNotificationService {
     final BigPictureStyleInformation bigPictureStyleInformation =
         BigPictureStyleInformation(
       ByteArrayAndroidBitmap.fromBase64String(payload?['image'] ?? ''),
-      largeIcon: ByteArrayAndroidBitmap.fromBase64String(payload?['image'] ?? ''),
+      largeIcon:
+          ByteArrayAndroidBitmap.fromBase64String(payload?['image'] ?? ''),
       contentTitle: title,
       htmlFormatContentTitle: true,
       htmlFormatSummaryText: true,
@@ -226,22 +242,26 @@ class PushNotificationService {
       playSound: true,
       styleInformation: bigPictureStyleInformation,
     );
-    
-    const DarwinNotificationDetails iOSPlatformChannelSpecifics =
+
+    List<DarwinNotificationAttachment>? attachments;
+    if (payload?['image'] != null) {
+      attachments = [DarwinNotificationAttachment(payload!['image']!)];
+    }
+    final DarwinNotificationDetails iOSPlatformChannelSpecifics =
         DarwinNotificationDetails(
       presentAlert: true,
       presentBadge: true,
       presentSound: true,
-      attachments: payload?['image'] != null ? [
-        DarwinNotificationAttachment(payload!['image']!)
-      ] : null,
+      attachments: payload?['image'] != null
+          ? [DarwinNotificationAttachment(payload!['image']!)]
+          : null,
     );
-    
+
     final NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics,
     );
-    
+
     await notification.show(
       0,
       title,
@@ -382,7 +402,8 @@ class PushNotificationService {
     }
   }
 
-  static Future<void> handleBackgroundMessage(RemoteMessage notification) async {
+  static Future<void> handleBackgroundMessage(
+      RemoteMessage notification) async {
     print('notification data ----> ${notification.data}');
     var image = notification.data['image'] ?? '';
     if (image != null && image != 'null' && image != '') {

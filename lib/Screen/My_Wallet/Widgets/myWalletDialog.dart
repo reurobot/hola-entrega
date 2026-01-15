@@ -692,7 +692,7 @@ class _AddMoneyDialogState extends State<AddMoneyDialog> {
         index == 4 && systemProvider!.isStripeEnable! ||
         index == 5 && systemProvider!.isPaytmEnable! ||
         index == 6 && systemProvider!.isMidtrashEnable! ||
-        index == 7 && systemProvider!.isMFSDKEnable! ||
+        index == 7 && systemProvider!.isMyFatoorahEnable! ||
         index == 8 && systemProvider!.isInstamojoEnable! ||
         index == 9 && systemProvider!.isPhonepeEnable!) {
       return InkWell(
@@ -942,114 +942,44 @@ class _AddMoneyDialogState extends State<AddMoneyDialog> {
       String orderID =
           'wallet-refill-user-${context.read<UserProvider>().userId}-${DateTime.now().millisecondsSinceEpoch}-${Random().nextInt(900) + 100}';
       String amount = price;
-      String successUrl =
-          '${systemProvider!.myfatoorahSuccessUrl!}?txn_id=$tranId&order_id=$orderID&amount=$price';
-      String errorUrl =
-          '${systemProvider!.myfatoorahErrorUrl!}?txn_id=$tranId&order_id=$orderID&amount=$price';
-      String token = systemProvider!.myfatoorahToken!;
       try {
-        var response = await MFSDK.startPayment(
-          context: context,
-          successChild: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: const SizedBox(
-              width: 200,
-              height: 200,
-              child: Icon(Icons.done, size: 100, color: Colors.green),
-            ),
-          ),
-          request: systemProvider!.myfatoorahPaymentMode == 'test'
-              ? MFExecutePaymentRequest.test(
-                  userDefinedField: orderID,
-                  currencyIso: () {
-                    if (systemProvider!.myfatoorahCosuntry == 'Kuwait') {
-                      return MFCountry.Kuwait;
-                    } else if (systemProvider!.myfatoorahCosuntry == 'UAE') {
-                      return MFCountry.UAE;
-                    } else if (systemProvider!.myfatoorahCosuntry == 'Egypt') {
-                      return MFCountry.Egypt;
-                    } else if (systemProvider!.myfatoorahCosuntry ==
-                        'Bahrain') {
-                      return MFCountry.Bahrain;
-                    } else if (systemProvider!.myfatoorahCosuntry == 'Jordan') {
-                      return MFCountry.Jordan;
-                    } else if (systemProvider!.myfatoorahCosuntry == 'Oman') {
-                      return MFCountry.Oman;
-                    } else if (systemProvider!.myfatoorahCosuntry ==
-                        'SaudiArabia') {
-                      return MFCountry.SaudiArabia;
-                    } else if (systemProvider!.myfatoorahCosuntry ==
-                        'SaudiArabia') {
-                      return MFCountry.Qatar;
-                    }
-                    return MFCountry.SaudiArabia;
-                  }(),
-                  successUrl: successUrl,
-                  errorUrl: errorUrl,
-                  invoiceAmount: double.parse(amount),
-                  language: () {
-                    if (systemProvider!.myfatoorahLanguage == 'english') {
-                      return MFLanguage.English;
-                    }
-                    return MFLanguage.Arabic;
-                  }(),
-                  token: token,
-                )
-              : MFExecutePaymentRequest.live(
-                  userDefinedField: orderID,
-                  currencyIso: () {
-                    if (systemProvider!.myfatoorahCosuntry == 'Kuwait') {
-                      return MFCountry.Kuwait;
-                    } else if (systemProvider!.myfatoorahCosuntry == 'UAE') {
-                      return MFCountry.UAE;
-                    } else if (systemProvider!.myfatoorahCosuntry == 'Egypt') {
-                      return MFCountry.Egypt;
-                    } else if (systemProvider!.myfatoorahCosuntry ==
-                        'Bahrain') {
-                      return MFCountry.Bahrain;
-                    } else if (systemProvider!.myfatoorahCosuntry == 'Jordan') {
-                      return MFCountry.Jordan;
-                    } else if (systemProvider!.myfatoorahCosuntry == 'Oman') {
-                      return MFCountry.Oman;
-                    } else if (systemProvider!.myfatoorahCosuntry ==
-                        'SaudiArabia') {
-                      return MFCountry.SaudiArabia;
-                    } else if (systemProvider!.myfatoorahCosuntry ==
-                        'SaudiArabia') {
-                      return MFCountry.Qatar;
-                    }
-                    return MFCountry.SaudiArabia;
-                  }(),
-                  successUrl: successUrl,
-                  errorUrl: errorUrl,
-                  invoiceAmount: double.parse(amount),
-                  language: () {
-                    if (systemProvider!.myfatoorahLanguage == 'english') {
-                      return MFLanguage.English;
-                    }
-                    return MFLanguage.Arabic;
-                  }(),
-                  token: token,
+        var response = await MFSDK.executePayment(
+          MFExecutePaymentRequest(invoiceValue: double.parse(amount)),
+          MFLanguage.ENGLISH,
+          (invoiceId) {
+            showDialog(
+              context: context,
+              builder: (context) => InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: const SizedBox(
+                  width: 200,
+                  height: 200,
+                  child: Icon(Icons.done, size: 100, color: Colors.green),
                 ),
+              ),
+            );
+          },
         );
-        if (response.status.toString() == 'PaymentStatus.Success') {
+        if (response.invoiceStatus == 'Paid') {
           //updateUserWalletAmount();
           return {
             'error': false,
             'message': 'Transaction Successful',
             'status': true,
           };
-        }
-        if (response.status.toString() == 'PaymentStatus.Error') {
-          return {'error': true, 'message': e.toString(), 'status': false};
-        }
-        if (response.status.toString() == 'PaymentStatus.None') {
-          return {'error': true, 'message': e.toString(), 'status': false};
+        } else {
+          return {
+            'error': true,
+            'message': 'Transaction failed',
+            'status': false
+          };
         }
       } on TimeoutException catch (_) {
         setSnackbar('somethingMSg'.translate(context: context), context);
+      } catch (e) {
+        return {'error': true, 'message': e.toString(), 'status': false};
       }
       return {
         'error': false,

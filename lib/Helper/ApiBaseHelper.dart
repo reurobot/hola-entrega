@@ -23,17 +23,22 @@ class ApiException implements Exception {
 
 class ApiBaseHelper {
   //To download the attachment, using the dio
-  Future<void> downloadFile(
-      {required String url,
-      required dio_.CancelToken cancelToken,
-      required String savePath,
-      required Function updateDownloadedPercentage}) async {
+  Future<void> downloadFile({
+    required String url,
+    required dio_.CancelToken cancelToken,
+    required String savePath,
+    required Function updateDownloadedPercentage,
+  }) async {
     try {
       final dio_.Dio dio = dio_.Dio();
-      await dio.download(url, savePath, cancelToken: cancelToken,
-          onReceiveProgress: ((count, total) {
-        updateDownloadedPercentage((count / total) * 100);
-      }));
+      await dio.download(
+        url,
+        savePath,
+        cancelToken: cancelToken,
+        onReceiveProgress: ((count, total) {
+          updateDownloadedPercentage((count / total) * 100);
+        }),
+      );
     } on dio_.DioException catch (e) {
       if (e.type == dio_.DioExceptionType.connectionError) {
         throw ApiException('No Internet connection');
@@ -47,6 +52,11 @@ class ApiBaseHelper {
 
   Future<dynamic> postAPICall(Uri url, Map param) async {
     try {
+      if (kDebugMode) {
+        print(
+          'Starting API call to $url with params $param and headers $headers',
+        );
+      }
       final response = await post(
         url,
         body: param.isNotEmpty ? param : {},
@@ -63,10 +73,21 @@ class ApiBaseHelper {
       if (res == null) return {};
       return res;
     } on SocketException {
+      if (kDebugMode) {
+        print('SocketException: No Internet connection for $url');
+      }
       throw ApiException('No Internet connection');
     } on TimeoutException {
+      if (kDebugMode) {
+        print(
+          'TimeoutException: Server not responding for $url after $timeOut seconds',
+        );
+      }
       throw ApiException('Something went wrong, Server not Responding');
     } on Exception catch (e) {
+      if (kDebugMode) {
+        print('General Exception: ${e.toString()} for $url');
+      }
       throw ApiException('Something Went wrong with ${e.toString()}');
     }
   }
@@ -139,7 +160,7 @@ class CustomException implements Exception {
 
 class FetchDataException extends CustomException {
   FetchDataException([message])
-      : super(message, 'Error During Communication: ');
+    : super(message, 'Error During Communication: ');
 }
 
 class BadRequestException extends CustomException {

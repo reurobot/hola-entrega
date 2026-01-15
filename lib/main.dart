@@ -12,7 +12,7 @@ import 'package:eshop_multivendor/Provider/explore_provider.dart';
 import 'package:eshop_multivendor/Provider/authenticationProvider.dart';
 import 'package:eshop_multivendor/Provider/myWalletProvider.dart';
 import 'package:eshop_multivendor/Provider/paymentProvider.dart';
-import 'package:eshop_multivendor/Screen/SplashScreen/Splash.dart';
+
 import 'package:eshop_multivendor/cubits/appSettingsCubit.dart';
 import 'package:eshop_multivendor/cubits/brandsListCubit.dart';
 import 'package:eshop_multivendor/cubits/languageCubit.dart';
@@ -60,18 +60,21 @@ import 'Provider/systemProvider.dart';
 import 'Provider/userWalletProvider.dart';
 import 'Provider/writeReviewProvider.dart';
 import 'Screen/Dashboard/Dashboard.dart';
+import 'Screen/SplashScreen/Splash.dart';
 import 'firebase_options.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  if (Firebase.apps.isNotEmpty) {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  } else {
-    await Firebase.initializeApp();
+  if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+    if (Firebase.apps.isNotEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    } else {
+      await Firebase.initializeApp();
+    }
   }
 
   await Hive.initFlutter();
@@ -86,7 +89,9 @@ void main() async {
   }
   initializedDownload();
 
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  }
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -304,9 +309,9 @@ class _MyAppState extends State<MyApp> {
                     ),
                   ),
                   debugShowCheckedModeBanner: false,
-                  initialRoute: '/',
+                  initialRoute: '/splash',
                   routes: {
-                    '/': (context) => const Splash(),
+                    '/splash': (context) => const Splash(),
                     '/home': (context) {
                       return Dashboard(
                         key: Dashboard.dashboardScreenKey,

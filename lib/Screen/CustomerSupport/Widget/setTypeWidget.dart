@@ -53,7 +53,7 @@ class _SetTypeWidgetState extends State<SetTypeWidget> {
           borderRadius: BorderRadius.circular(circularBorderRadius10),
         ),
       ),
-      initialValue: context.read<CustomerSupportProvider>().type,
+      value: context.read<CustomerSupportProvider>().type,
       style: Theme.of(context)
           .textTheme
           .titleSmall!

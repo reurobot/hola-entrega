@@ -371,7 +371,7 @@ class GetOrderDetails extends StatelessWidget {
 
             String target = Platform.isAndroid && hasPermission
                 ? (await ExternalPath.getExternalStoragePublicDirectory(
-                    ExternalPath.DIRECTORY_DOWNLOADS,
+                    ExternalPath.DIRECTORY_DOWNLOAD,
                   ))
                 : (await getApplicationDocumentsDirectory()).path;
 

@@ -47,31 +47,31 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: '',
-    appId: 'alondra-7abdf',
-    messagingSenderId: '',
-    projectId: '493532107830',
-    authDomain: '',
-    storageBucket: '',
+    apiKey: 'AIzaSyAdrQ1GI_704W0ThhVHTqYE0VDboNOK1TY',
+    appId: '1:61551482062:web:YOUR_WEB_APP_ID',
+    messagingSenderId: '61551482062',
+    projectId: 'alondraapp-e9c61',
+    authDomain: 'alondraapp-e9c61.firebaseapp.com',
+    storageBucket: 'alondraapp-e9c61.firebasestorage.app',
     measurementId: '',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: '',
-    appId: 'alondra-7abdf',
-    messagingSenderId: '',
-    projectId: '493532107830',
-    storageBucket: '',
+    apiKey: 'AIzaSyAdrQ1GI_704W0ThhVHTqYE0VDboNOK1TY',
+    appId: '1:61551482062:android:f23a1cf6e1f1017c1aec9f',
+    messagingSenderId: '61551482062',
+    projectId: 'alondraapp-e9c61',
+    storageBucket: 'alondraapp-e9c61.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: '',
-    appId: 'alondra-7abdf',
-    messagingSenderId: '',
-    projectId: '493532107830',
-    storageBucket: '',
+    apiKey: 'AIzaSyBBgyJoJMVVrCewaOPgtBrvdfQQsJnlx1E',
+    appId: '1:61551482062:ios:YOUR_IOS_APP_ID',
+    messagingSenderId: '61551482062',
+    projectId: 'alondraapp-e9c61',
+    storageBucket: 'alondraapp-e9c61.firebasestorage.app',
     androidClientId: '',
     iosClientId: '',
-    iosBundleId: '',
+    iosBundleId: 'alondra.multivendor.customer',
   );
 }

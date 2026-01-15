@@ -1544,7 +1544,7 @@ class StateAddress extends State<AddAddress> with TickerProviderStateMixin {
       ),
       child: SwitchListTile(
         value: context.read<AddressProvider>().checkedDefault,
-        activeThumbColor: Theme.of(context).colorScheme.secondary,
+        activeColor: Theme.of(context).colorScheme.secondary,
         dense: true,
         onChanged: (newValue) {
           if (mounted) {

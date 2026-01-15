@@ -90,9 +90,8 @@ class CartRepository {
         'productos': jsonEncode(productos),
       };
 
-      var result = await ApiBaseHelper().postAPICall(
-        Uri.parse('https://api.ejemplo.com/solicitar_descuentos'),
-        parameter,
+      var result = await ApiBaseHelper().getAPICall(
+        Uri.parse('${baseUrl}obtener_tabla_descuentos'),
       );
 
       return result;
@@ -109,7 +108,7 @@ class CartRepository {
       };
 
       var result = await ApiBaseHelper().postAPICall(
-        Uri.parse('https://api.ejemplo.com/obtener_credito'),
+        Uri.parse('${baseUrl}obtener_credito'),
         parameter,
       );
 

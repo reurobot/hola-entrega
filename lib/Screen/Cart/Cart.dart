@@ -4,13 +4,11 @@ import 'dart:io';
 
 import 'package:eshop_multivendor/Helper/ApiBaseHelper.dart';
 import 'package:eshop_multivendor/Helper/Constant.dart';
-import 'package:eshop_multivendor/Helper/assetsConstant.dart';
 import 'package:eshop_multivendor/Provider/CartProvider.dart';
 import 'package:eshop_multivendor/Provider/SettingProvider.dart';
 import 'package:eshop_multivendor/Provider/UserProvider.dart';
 import 'package:eshop_multivendor/Screen/Cart/Widget/search_user_client/search_user_client_widget.dart';
 import 'package:eshop_multivendor/Screen/Cart/Widget/proceed_checkout_button.dart';
-import 'package:eshop_multivendor/Screen/Cart/Widget/dynamicDiscountTable.dart';
 import 'package:eshop_multivendor/Screen/Cart/Widget/dynamicDiscountTable.dart';
 import 'package:eshop_multivendor/Model/user_client_search.dart';
 import 'package:eshop_multivendor/Screen/Payment/Widget/paymentMethod.dart';
@@ -19,13 +17,11 @@ import 'package:eshop_multivendor/Screen/homePage/widgets/hideAppBarBottom.dart'
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:paystack_for_flutter/paystack_for_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mime/mime.dart';
-import 'package:myfatoorah_flutter/myfatoorah_flutter.dart';
 import 'package:paystack_for_flutter/paystack_for_flutter.dart';
+import 'package:paytmpayments_allinonesdk/paytmpayments_allinonesdk.dart';
 import 'package:paytmpayments_allinonesdk/paytmpayments_allinonesdk.dart';
 import 'package:provider/provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -37,7 +33,6 @@ import '../../Model/Model.dart';
 import '../../Model/Section_Model.dart';
 import '../../Model/User.dart';
 import '../../Provider/paymentProvider.dart';
-import '../../Provider/productListProvider.dart';
 import '../../Provider/promoCodeProvider.dart';
 import '../../repository/cartRepository.dart';
 import '../../widgets/ButtonDesing.dart';
@@ -439,10 +434,10 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                                                   height: MediaQuery.of(context)
                                                       .viewInsets
                                                       .bottom,
-                ),
-              ],
-            ),
-           ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ),
                                         Selector<CartProvider, bool>(
                                           builder: (context, data, child) {
@@ -1753,146 +1748,14 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
     if (isNetworkAvail) {
       try {
         String amount = context.read<CartProvider>().totalPrice.toString();
-        String successUrl =
-            '${context.read<CartProvider>().myfatoorahSuccessUrl!}?order_id=$orderID&amount=${double.parse(amount)}';
-        String errorUrl =
-            '${context.read<CartProvider>().myfatoorahErrorUrl!}?order_id=$orderID&amount=${double.parse(amount)}';
-        String token = context.read<CartProvider>().myfatoorahToken!;
         context.read<CartProvider>().setProgress(true);
-        var response = await MFSDK.startPayment(
-          context: context,
-          successChild: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  'Payment Done Successfully ...!'.translate(context: context),
-                  style: const TextStyle(
-                    fontFamily: 'ubuntu',
-                  ),
-                ),
-                const SizedBox(
-                  width: 200,
-                  height: 100,
-                  child: Icon(
-                    Icons.done,
-                    size: 100,
-                    color: Colors.green,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          request: context.read<CartProvider>().myfatoorahPaymentMode == 'test'
-              ? MFExecutePaymentRequest.test(
-                  currencyIso: () {
-                    if (context.read<CartProvider>().myfatoorahMFCountry ==
-                        'Kuwait') {
-                      return MFCountry.kuwait;
-                    } else if (context.read<CartProvider>().myfatoorahMFCountry ==
-                        'UAE') {
-                      return MFCountry.UAE;
-                    } else if (context.read<CartProvider>().myfatoorahMFCountry ==
-                        'Egypt') {
-                      return MFCountry.Egypt;
-                    } else if (context.read<CartProvider>().myfatoorahMFCountry ==
-                        'Bahrain') {
-                      return MFCountry.Bahrain;
-                    } else if (context.read<CartProvider>().myfatoorahMFCountry ==
-                        'Jordan') {
-                      return MFCountry.Jordan;
-                    } else if (context.read<CartProvider>().myfatoorahMFCountry ==
-                        'Oman') {
-                      return MFCountry.Oman;
-                    } else if (context.read<CartProvider>().myfatoorahMFCountry ==
-                        'SaudiArabia') {
-                      return MFCountry.SaudiArabia;
-                    } else if (context.read<CartProvider>().myfatoorahMFCountry ==
-                        'SaudiArabia') {
-                      return MFCountry.Qatar;
-                    }
-                    return MFCountry.SaudiArabia;
-                  }(),
-                  successUrl: successUrl,
-                  errorUrl: errorUrl,
-                  invoiceAmount: double.parse(amount),
-                  userDefinedField: orderID,
-                  language: () {
-                    if (context.read<CartProvider>().myfatoorahLanguage ==
-                        'english') {
-                      return MFLanguage.English;
-                    }
-                    return MFLanguage.Arabic;
-                  }(),
-                  token: token,
-                )
-              : MFExecutePaymentRequest.live(
-                  currencyIso: () {
-                    if (context.read<CartProvider>().myfatoorahMFCountry ==
-                        'Kuwait') {
-                      return MFCountry.kuwait;
-                    } else if (context.read<CartProvider>().myfatoorahMFCountry ==
-                        'UAE') {
-                      return MFCountry.UAE;
-                    } else if (context.read<CartProvider>().myfatoorahMFCountry ==
-                        'Egypt') {
-                      return MFCountry.Egypt;
-                    } else if (context.read<CartProvider>().myfatoorahMFCountry ==
-                        'Bahrain') {
-                      return MFCountry.Bahrain;
-                    } else if (context.read<CartProvider>().myfatoorahMFCountry ==
-                        'Jordan') {
-                      return MFCountry.Jordan;
-                    } else if (context.read<CartProvider>().myfatoorahMFCountry ==
-                        'Oman') {
-                      return MFCountry.Oman;
-                    } else if (context.read<CartProvider>().myfatoorahMFCountry ==
-                        'SaudiArabia') {
-                      return MFCountry.SaudiArabia;
-                    } else if (context.read<CartProvider>().myfatoorahMFCountry ==
-                        'SaudiArabia') {
-                      return MFCountry.Qatar;
-                    }
-                    return MFCountry.SaudiArabia;
-                  }(),
-                  successUrl: successUrl,
-                  userDefinedField: orderID,
-                  errorUrl: errorUrl,
-                  invoiceAmount: double.parse(amount),
-                  language: () {
-                    if (context.read<CartProvider>().myfatoorahLanguage ==
-                        'english') {
-                      return MFLanguage.English;
-                    }
-                    return MFLanguage.Arabic;
-                  }(),
-                  token: token,
-                ),
-        );
+        // Temporarily disabled MyFatoorah integration for testing
+        // TODO: Update MyFatoorah SDK to compatible version
         context.read<CartProvider>().setProgress(false);
 
-        if (response.status.toString() == 'PaymentStatus.Success') {
-          context.read<CartProvider>().setProgress(true);
-
-          await updateOrderStatus(orderID: orderID, status: PLACED);
-          addTransaction(
-            response.paymentId,
-            orderID,
-            PLACED,
-            msg,
-            true,
-          );
-        }
-        if (response.status.toString() == 'PaymentStatus.None') {
-          setSnackbar(response.status.toString(), context);
-          deleteOrder(orderID);
-          //
-        }
-        if (response.status.toString() == 'PaymentStatus.Error') {
-          setSnackbar(response.status.toString(), context);
-          deleteOrder(orderID);
-        }
+        // Temporarily simplified payment logic for testing
+        // TODO: Implement proper MyFatoorah integration
+        context.read<CartProvider>().setProgress(false);
       } on TimeoutException catch (_) {
         context.read<CartProvider>().setProgress(false);
         setSnackbar('somethingMSg'.translate(context: context), context);
@@ -2352,10 +2215,10 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
       // if(mounted) context.read<CartProvider>().saveLaterList.clear();
 
       context.read<CartProvider>().productIds = (await db.getCart())!;
-      await _getOffCart();
+      _getOffCart();
       context.read<CartProvider>().productVariantIds =
           (await db.getSaveForLater())!;
-      await _getOffSaveLater();
+      _getOffSaveLater();
     }
   }
 
@@ -2377,9 +2240,6 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
               height: MediaQuery.of(context).size.height,
               color: Theme.of(context).colorScheme.black26,
             ),
-            Lottie.asset(
-              DesignConfiguration.setLottiePath(Assets.celebrateName),
-            ),
             Positioned(
               top: MediaQuery.of(context).size.height * 0.3,
               left: MediaQuery.of(context).size.width * 0.1,
@@ -2387,132 +2247,38 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
               child: Container(
                 height: MediaQuery.of(context).size.height * 0.35,
                 decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.white,
-                    ),
-                    borderRadius: BorderRadius.circular(circularBorderRadius20),
-                    color: Theme.of(context).colorScheme.white),
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.white,
+                  ),
+                  borderRadius: BorderRadius.circular(circularBorderRadius20),
+                  color: Theme.of(context).colorScheme.white,
+                ),
                 child: Material(
                   color: Colors.transparent,
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        child: Lottie.asset(
-                            DesignConfiguration.setLottiePath(
-                                Assets.promocodeName),
-                            height: 150,
-                            width: 150),
-                      ),
                       Text(
-                        '${context.read<CartProvider>().promocode} applied',
-                        style: TextStyle(
-                          fontSize: textFontSize16,
-                          color: Theme.of(context).colorScheme.fontColor,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        '${'You saved'.translate(context: context)} ${DesignConfiguration.getPriceFormat(context, context.read<CartProvider>().promoAmt)}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: textFontSize18,
-                          color: Theme.of(context).colorScheme.fontColor,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        'with this coupon code'.translate(context: context),
-                        style: TextStyle(
+                        'woohoo! Thanks'.translate(context: context),
+                        style: const TextStyle(
                           fontSize: textFontSize12,
-                          color: Theme.of(context).colorScheme.fontColor,
+                          color: colors.red,
+                          fontFamily: 'ubuntu',
                         ),
                       ),
-            Expanded(
-              child: Center(
-                          child: Text(
-                            'woohoo! Thanks'.translate(context: context),
-                             style: const TextStyle(
-                               fontSize: textFontSize12,
-                               color: colors.red,
-                               fontFamily: 'ubuntu',
-                             ),
-                                           ),
-                                         ],
-                                       ),
-                                      ),
-
-                                      const SizedBox(width: 8),
-
-                                      // TABLA DINÁMICA DE DESCUENTOS Y ALERTA
-                                      // if (context.read<CartProvider>().cartList.isNotEmpty)
-                                      //   const DynamicDiscountTable(),
-
-                                     // TABLA DINÁMICA DE DESCUENTOS Y ALERTA
-                                     if (context.read<CartProvider>().cartList.isNotEmpty)
-                                       const DynamicDiscountTable(),
-                                    
-                                     // BOTÓN DESCUENTOS
-                                    Expanded(
-                                      flex: 3,
-                                      child: InkWell(
-                                        onTap: discountApllied
-                                            ? null
-                                            : () =>
-                                                _consultarDescuentos(context),
-                                        borderRadius: BorderRadius.circular(
-                                          circularBorderRadius7,
-                                        ),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 6,
-                                            horizontal: 4,
-                                          ),
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .white,
-                                            border: Border.all(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .gray,
-                                            ),
-                                            borderRadius: BorderRadius.circular(
-                                              circularBorderRadius7,
-                                            ),
-                                          ),
-                                          child: const Text(
-                                            'Solicitar descuentos',
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-
-                                    const SizedBox(width: 8),
-
-                                    // BOTÓN CONFIRMAR
-                                    ProceedCheckoutButton(
-                                      onCheckout: checkout,
-                                      onCallApi: callApi,
-                                      cartWidget:
-                                          Cart(fromBottom: widget.fromBottom),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              );
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    overlayState.insert(overlayEntry);
+    await Future.delayed(const Duration(seconds: 3));
+    overlayEntry.remove();
   }
 
   void _getCart(String save) {
@@ -2523,11 +2289,11 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
     context.read<CartProvider>().getUserCart(save: save, context: context);
   }
 
-  void _getOffCart() {
+  Future<void> _getOffCart() async {
     context.read<CartProvider>().getUserOfflineCart(context);
   }
 
-  void _getOffSaveLater() {
+  Future<void> _getOffSaveLater() async {
     // TODO: implement offline save later if needed
   }
 
@@ -2763,121 +2529,6 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
               );
   }
 
-  Future<void> _getAddress() async {
-    isNetworkAvail = await isNetworkAvailable();
-    if (isNetworkAvail) {
-      try {
-        Map<String, dynamic> parameter = {
-          // USER_ID: context.read<UserProvider>().userId,
-        };
-
-        apiBaseHelper.postAPICall(getAddressApi, parameter).then((getdata) {
-          bool error = getdata['error'];
-
-          if (!error) {
-            var data = getdata['data'];
-
-            context.read<CartProvider>().addressList =
-                (data as List).map((data) => User.fromAddress(data)).toList();
-
-            if (context.read<CartProvider>().addressList.length == 1) {
-              context.read<CartProvider>().selectedAddress = 0;
-              context.read<CartProvider>().selAddress =
-                  context.read<CartProvider>().addressList[0].id;
-              if (!ISFLAT_DEL) {
-                if (context.read<CartProvider>().totalPrice <
-                    double.parse(
-                        context.read<CartProvider>().addressList[0].freeAmt!)) {
-                  context.read<CartProvider>().deliveryCharge = double.parse(
-                      context
-                          .read<CartProvider>()
-                          .addressList[0]
-                          .deliveryCharge!);
-                } else {
-                  context.read<CartProvider>().deliveryCharge = 0;
-                }
-              }
-            } else {
-              for (int i = 0;
-                  i < context.read<CartProvider>().addressList.length;
-                  i++) {
-                if (context.read<CartProvider>().addressList[i].isDefault ==
-                    '1') {
-                  context.read<CartProvider>().selectedAddress = i;
-                  context.read<CartProvider>().selAddress =
-                      context.read<CartProvider>().addressList[i].id;
-                  if (!ISFLAT_DEL) {
-                    if (context.read<CartProvider>().totalPrice <
-                        double.parse(context
-                            .read<CartProvider>()
-                            .addressList[i]
-                            .freeAmt!)) {
-                      context.read<CartProvider>().deliveryCharge =
-                          double.parse(context
-                              .read<CartProvider>()
-                              .addressList[i]
-                              .deliveryCharge!);
-                    } else {
-                      context.read<CartProvider>().deliveryCharge = 0;
-                    }
-                  }
-                }
-              }
-            }
-
-            if (ISFLAT_DEL) {
-              if ((context.read<CartProvider>().oriPrice) <
-                  double.parse(MIN_AMT!)) {
-                context.read<CartProvider>().deliveryCharge =
-                    double.parse(CUR_DEL_CHR!);
-              } else {
-                context.read<CartProvider>().deliveryCharge = 0;
-              }
-            }
-            context.read<CartProvider>().totalPrice =
-                context.read<CartProvider>().totalPrice +
-                    context.read<CartProvider>().deliveryCharge;
-          } else {
-            if (ISFLAT_DEL) {
-              if ((context.read<CartProvider>().oriPrice) <
-                  double.parse(MIN_AMT!)) {
-                context.read<CartProvider>().deliveryCharge =
-                    double.parse(CUR_DEL_CHR!);
-              } else {
-                context.read<CartProvider>().deliveryCharge = 0;
-              }
-            }
-            context.read<CartProvider>().totalPrice =
-                context.read<CartProvider>().totalPrice +
-                    context.read<CartProvider>().deliveryCharge;
-          }
-          if (mounted) {
-            setState(
-              () {
-                _isLoading = false;
-              },
-            );
-          }
-          if (mounted) {
-            if (context.read<CartProvider>().checkoutState != null) {
-              context.read<CartProvider>().checkoutState!(() {});
-            }
-          }
-        }, onError: (error) {
-          setSnackbar(error.toString(), context);
-        });
-      } on TimeoutException catch (_) {}
-    } else {
-      if (mounted) {
-        setState(
-          () {
-            isNetworkAvail = false;
-          },
-        );
-      }
-    }
-  }
-
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {
     Map<String, dynamic> result =
         await updateOrderStatus(orderID: razorpayOrderId, status: PLACED);
@@ -2924,7 +2575,7 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
     // Mostrar mensaje de carga
     showDialog(
       context: context,
-      barrierColor: Colors.black.withOpacity(0.3),
+      barrierColor: Colors.black.withValues(alpha: 0.3),
       barrierDismissible: false,
       builder: (_) {
         return AlertDialog(
@@ -2943,9 +2594,9 @@ class StateCart extends State<Cart> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-           ],
-           ),
-           );
+            ],
+          ),
+        );
       },
     );
 

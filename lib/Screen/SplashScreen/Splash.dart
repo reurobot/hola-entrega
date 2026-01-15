@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:eshop_multivendor/Helper/Constant.dart';
 import 'package:eshop_multivendor/Helper/assetsConstant.dart';
 import 'package:eshop_multivendor/Provider/SettingProvider.dart';
@@ -35,6 +36,7 @@ class _SplashScreen extends State<Splash> with TickerProviderStateMixin {
     vsync: this,
     duration: const Duration(milliseconds: 200),
   );
+  Timer? _timeoutTimer;
 
   @override
   void initState() {
@@ -54,7 +56,25 @@ class _SplashScreen extends State<Splash> with TickerProviderStateMixin {
       context.read<AppSettingsCubit>().fetchAndStoreAppSettings();
     });
 
+    // Add 30-second timeout to prevent indefinite hanging
+    _timeoutTimer = Timer(const Duration(seconds: 30), () {
+      if (mounted &&
+          context.read<AppSettingsCubit>().state is AppSettingsProgress) {
+        log('Splash screen timeout reached, forcing navigation',
+            name: 'SplashScreen');
+        navigationPage();
+      }
+    });
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    buttonController.dispose();
+    navigationContainerAnimationController.dispose();
+    _timeoutTimer?.cancel();
+    super.dispose();
   }
 
   void initializeAnimationController() {
@@ -91,7 +111,7 @@ class _SplashScreen extends State<Splash> with TickerProviderStateMixin {
       key: _scaffoldKey,
       body: BlocConsumer<AppSettingsCubit, AppSettingsState>(
         listener: (context, state) {
-          if (state is AppSettingsSuccess) {
+          if (state is AppSettingsSuccess && mounted) {
             navigationPage();
           }
         },

@@ -89,7 +89,7 @@ Locale getLocaleFromLanguageCode(final String languageCode) {
 }
 
 //Time settings
-const int timeOut = 50;
+const int timeOut = 10;
 const int perPage = 10;
 
 //FontSize
@@ -202,7 +202,7 @@ Future<bool> hasStoragePermissionGiven() async {
 Future<String> getExternalStoragePath() async {
   return Platform.isAndroid
       ? (await ExternalPath.getExternalStoragePublicDirectory(
-          ExternalPath.DIRECTORY_DOWNLOADS))
+          ExternalPath.DIRECTORY_DOWNLOAD))
       : (await getApplicationDocumentsDirectory()).path;
 }
 

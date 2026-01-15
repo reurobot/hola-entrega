@@ -37,20 +37,23 @@ class _DynamicDiscountTableState extends State<DynamicDiscountTable> {
 
     try {
       final cartProvider = context.read<CartProvider>();
-      final dynamicDiscounts = await cartProvider.obtenerTablaDescuentosDinamica();
-      
+      final dynamicDiscounts =
+          await cartProvider.obtenerTablaDescuentosDinamica();
+
       if (dynamicDiscounts.isNotEmpty) {
         // Mapear porcentajes dinámicos a rangos base
         discountRanges = baseRanges.asMap().entries.map((entry) {
           final index = entry.key;
           final range = entry.value;
-          final discount = dynamicDiscounts.length > index 
-              ? dynamicDiscounts[index]['porcentaje'] ?? 0.0 
+          final discount = dynamicDiscounts.length > index
+              ? dynamicDiscounts[index]['porcentaje'] ?? 0.0
               : 0.0;
-          
+
           return {
             'min': range['min']!,
-            'max': range['max'] == double.infinity ? '∞' : range['max']!.toString(),
+            'max': range['max'] == double.infinity
+                ? '∞'
+                : range['max']!.toString(),
             'discount': discount,
           };
         }).toList();
@@ -86,8 +89,10 @@ class _DynamicDiscountTableState extends State<DynamicDiscountTable> {
   double getCurrentDiscount(double totalAmount) {
     for (final range in discountRanges) {
       final min = range['min'] as double;
-      final max = range['max'] == '∞' ? double.infinity : double.parse(range['max'].toString());
-      
+      final max = range['max'] == '∞'
+          ? double.infinity
+          : double.parse(range['max'].toString());
+
       if (totalAmount >= min && totalAmount < max) {
         return range['discount'] as double;
       }
@@ -98,8 +103,10 @@ class _DynamicDiscountTableState extends State<DynamicDiscountTable> {
   double getNextLevelAmount(double currentAmount) {
     for (final range in discountRanges) {
       final min = range['min'] as double;
-      final max = range['max'] == '∞' ? double.infinity : double.parse(range['max'].toString());
-      
+      final max = range['max'] == '∞'
+          ? double.infinity
+          : double.parse(range['max'].toString());
+
       if (currentAmount >= min && currentAmount < max) {
         return max == double.infinity ? 0.0 : max;
       }
@@ -111,8 +118,10 @@ class _DynamicDiscountTableState extends State<DynamicDiscountTable> {
     for (int i = 0; i < discountRanges.length; i++) {
       final range = discountRanges[i];
       final min = range['min'] as double;
-      final max = range['max'] == '∞' ? double.infinity : double.parse(range['max'].toString());
-      
+      final max = range['max'] == '∞'
+          ? double.infinity
+          : double.parse(range['max'].toString());
+
       if (currentAmount >= min && currentAmount < max) {
         if (i < discountRanges.length - 1) {
           return discountRanges[i + 1]['discount'] as double;
@@ -131,7 +140,8 @@ class _DynamicDiscountTableState extends State<DynamicDiscountTable> {
         final currentDiscount = getCurrentDiscount(totalAmount);
         final nextLevelAmount = getNextLevelAmount(totalAmount);
         final nextLevelDiscount = getNextLevelDiscount(totalAmount);
-        final amountNeeded = nextLevelAmount > 0 ? nextLevelAmount - totalAmount : 0.0;
+        final amountNeeded =
+            nextLevelAmount > 0 ? nextLevelAmount - totalAmount : 0.0;
 
         return Card(
           elevation: 2,
@@ -148,8 +158,8 @@ class _DynamicDiscountTableState extends State<DynamicDiscountTable> {
                     Text(
                       'Descuentos por monto de compra',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                     const Spacer(),
                     if (!isLoading)
@@ -161,15 +171,14 @@ class _DynamicDiscountTableState extends State<DynamicDiscountTable> {
                   ],
                 ),
                 const SizedBox(height: 15),
-
                 if (isLoading)
                   const Center(child: CircularProgressIndicator())
                 else ...[
                   // Tabla de descuentos
-                  _buildDiscountTable(currentDiscount),
-                  
+                  _buildDiscountTable(currentDiscount, cartProvider),
+
                   const SizedBox(height: 15),
-                  
+
                   // Alerta de proximidad
                   if (amountNeeded > 0 && nextLevelDiscount > currentDiscount)
                     _buildProximityAlert(
@@ -187,7 +196,8 @@ class _DynamicDiscountTableState extends State<DynamicDiscountTable> {
     );
   }
 
-  Widget _buildDiscountTable(double currentDiscount) {
+  Widget _buildDiscountTable(
+      double currentDiscount, CartProvider cartProvider) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
@@ -199,7 +209,7 @@ class _DynamicDiscountTableState extends State<DynamicDiscountTable> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: colors.primary.withOpacity(0.1),
+              color: colors.primary.withValues(alpha: 0.1),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(8),
                 topRight: Radius.circular(8),
@@ -207,26 +217,37 @@ class _DynamicDiscountTableState extends State<DynamicDiscountTable> {
             ),
             child: Row(
               children: [
-                const Expanded(flex: 2, child: Text('Monto de compra', style: TextStyle(fontWeight: FontWeight.bold))),
-                const Expanded(child: Text('Descuento', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
-                const Expanded(child: Text('Estado', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
+                const Expanded(
+                    flex: 2,
+                    child: Text('Monto de compra',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                const Expanded(
+                    child: Text('Descuento',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center)),
+                const Expanded(
+                    child: Text('Estado',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center)),
               ],
             ),
           ),
-          
+
           // Filas
           ...discountRanges.asMap().entries.map((entry) {
             final index = entry.key;
             final range = entry.value;
             final discount = range['discount'] as double;
-            final isCurrentRange = discount == currentDiscount && currentDiscount > 0;
-            final isAchieved = totalAmount >= (range['min'] as double);
-            
+            final isCurrentRange =
+                discount == currentDiscount && currentDiscount > 0;
+            final isAchieved =
+                cartProvider.oriPrice >= (range['min'] as double);
+
             Color rowColor = Colors.transparent;
             if (isCurrentRange) {
-              rowColor = colors.primary.withOpacity(0.2);
+              rowColor = colors.primary.withValues(alpha: 0.2);
             } else if (isAchieved && discount > 0) {
-              rowColor = Colors.green.withOpacity(0.1);
+              rowColor = Colors.green.withValues(alpha: 0.1);
             }
 
             return Container(
@@ -244,8 +265,8 @@ class _DynamicDiscountTableState extends State<DynamicDiscountTable> {
                 children: [
                   Expanded(
                     flex: 2,
-                    child:                     Text(
-                      range['max'] == '∞' 
+                    child: Text(
+                      range['max'] == '∞'
                           ? 'Más de ${formatPrice(range['min'] as double)}'
                           : '${formatPrice(range['min'] as double)} - ${formatPrice(double.parse(range['max'].toString()))}',
                     ),
@@ -261,7 +282,8 @@ class _DynamicDiscountTableState extends State<DynamicDiscountTable> {
                     ),
                   ),
                   Expanded(
-                    child: _buildStatusIcon(isCurrentRange, isAchieved, discount),
+                    child:
+                        _buildStatusIcon(isCurrentRange, isAchieved, discount),
                   ),
                 ],
               ),
@@ -272,7 +294,8 @@ class _DynamicDiscountTableState extends State<DynamicDiscountTable> {
     );
   }
 
-  Widget _buildStatusIcon(bool isCurrentRange, bool isAchieved, double discount) {
+  Widget _buildStatusIcon(
+      bool isCurrentRange, bool isAchieved, double discount) {
     if (isCurrentRange && discount > 0) {
       return const Icon(Icons.check_circle, color: Colors.green, size: 20);
     } else if (isAchieved && discount > 0) {
@@ -293,7 +316,7 @@ class _DynamicDiscountTableState extends State<DynamicDiscountTable> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.orange.withOpacity(0.1),
+        color: Colors.orange.withValues(alpha: 0.1),
         border: Border.all(color: Colors.orange),
         borderRadius: BorderRadius.circular(8),
       ),
@@ -308,9 +331,9 @@ class _DynamicDiscountTableState extends State<DynamicDiscountTable> {
                 Text(
                   '¡Estás cerca del siguiente nivel!',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange,
-                  ),
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange,
+                      ),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -330,7 +353,7 @@ class _DynamicDiscountTableState extends State<DynamicDiscountTable> {
 // Helper function for price formatting
 String formatPrice(double amount) {
   return '\$${amount.toStringAsFixed(2).replaceAllMapped(
-    RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-    (Match m) => '${m[1]},',
-  )}';
+        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+        (Match m) => '${m[1]},',
+      )}';
 }

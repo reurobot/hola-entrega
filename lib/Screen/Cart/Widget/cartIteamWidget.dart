@@ -64,7 +64,7 @@ class _CartIteamState extends State<CartIteam> {
 
     // Aplicar descuento individual si existe
     double finalPrice = price;
-    if (cartList[index].descuentoPorcentaje != null && 
+    if (cartList[index].descuentoPorcentaje != null &&
         cartList[index].descuentoPorcentaje! > 0) {
       finalPrice = price * (1 - (cartList[index].descuentoPorcentaje! / 100));
       cartList[index].precioConDescuento = finalPrice;
@@ -307,12 +307,14 @@ class _CartIteamState extends State<CartIteam> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    if (cartList[index].descuentoPorcentaje != null && 
-                                        cartList[index].descuentoPorcentaje! > 0) ...[
+                                    if (cartList[index].descuentoPorcentaje !=
+                                            null &&
+                                        cartList[index].descuentoPorcentaje! >
+                                            0) ...[
                                       Row(
                                         children: [
                                           Text(
-                                            '${DesignConfiguration.getPriceFormat(context, cartList[index].precioConDescuento)!} ',
+                                            '${DesignConfiguration.getPriceFormat(context, cartList[index].precioConDescuento!)!} ',
                                             style: TextStyle(
                                               color: Theme.of(context)
                                                   .colorScheme
@@ -328,7 +330,8 @@ class _CartIteamState extends State<CartIteam> {
                                             ),
                                             decoration: BoxDecoration(
                                               color: colors.primary,
-                                              borderRadius: BorderRadius.circular(4),
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
                                             ),
                                             child: Text(
                                               '-${cartList[index].descuentoPorcentaje!.toStringAsFixed(0)}%',
@@ -343,16 +346,20 @@ class _CartIteamState extends State<CartIteam> {
                                       ),
                                       Text(
                                         DesignConfiguration.getPriceFormat(
-                                          context,
-                                          cartList[index].originalPrice ?? price)!,
+                                            context,
+                                            cartList[index].originalPrice ??
+                                                price)!,
                                         style: Theme.of(context)
                                             .textTheme
                                             .labelSmall!
                                             .copyWith(
                                               fontFamily: 'ubuntu',
-                                              decoration: TextDecoration.lineThrough,
-                                              decorationColor: colors.darkColor3,
-                                              decorationStyle: TextDecorationStyle.solid,
+                                              decoration:
+                                                  TextDecoration.lineThrough,
+                                              decorationColor:
+                                                  colors.darkColor3,
+                                              decorationStyle:
+                                                  TextDecorationStyle.solid,
                                               decorationThickness: 2,
                                               letterSpacing: 0.7,
                                             ),

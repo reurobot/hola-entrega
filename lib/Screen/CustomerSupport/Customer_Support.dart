@@ -460,7 +460,7 @@ class _CustomerSupportState extends State<CustomerSupport>
             borderRadius: BorderRadius.circular(circularBorderRadius10),
           ),
         ),
-        initialValue: context.read<CustomerSupportProvider>().status,
+        value: context.read<CustomerSupportProvider>().status,
         style: Theme.of(context)
             .textTheme
             .titleSmall!

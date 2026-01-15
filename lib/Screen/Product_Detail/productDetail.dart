@@ -4,9 +4,7 @@ import 'package:eshop_multivendor/Helper/ApiBaseHelper.dart';
 import 'package:eshop_multivendor/Helper/assetsConstant.dart';
 import 'package:eshop_multivendor/Provider/addressProvider.dart';
 import 'package:eshop_multivendor/Provider/homePageProvider.dart';
-import 'package:eshop_multivendor/Screen/Product_Detail/Widget/chateWithSeller.dart';
 import 'package:eshop_multivendor/Screen/Product_Detail/Widget/compareProduct.dart';
-import 'package:eshop_multivendor/Screen/Product_Detail/Widget/deliveryPinCode.dart';
 import 'package:eshop_multivendor/Screen/Product_Detail/Widget/productExtraDetail.dart';
 import 'package:eshop_multivendor/Screen/Product_Detail/Widget/statesticsAnimatedHighlightWidget.dart';
 import 'package:eshop_multivendor/cubits/appSettingsCubit.dart';
@@ -48,7 +46,6 @@ import 'Widget/productItemList.dart';
 import 'Widget/postFaq.dart';
 import 'Widget/productMoreDetail.dart';
 import 'Widget/reviewUI.dart';
-import 'Widget/sellerDetail.dart';
 import 'Widget/specialExtraOfferBtn.dart';
 
 // ignore: must_be_immutable

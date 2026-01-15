@@ -1208,7 +1208,7 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
 
                     String target = Platform.isAndroid && hasPermission
                         ? (await ExternalPath.getExternalStoragePublicDirectory(
-                            ExternalPath.DIRECTORY_DOWNLOADS,
+                            ExternalPath.DIRECTORY_DOWNLOAD,
                           ))
                         : (await getApplicationDocumentsDirectory()).path;
 

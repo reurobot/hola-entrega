@@ -1,89 +1,12 @@
-Resumen de tiempo
 
-    Problema: ¿El Flujo de trabajo USA ¿El SDK De Dardo y Ejecución dart pub get, Pero ¿El Proyecto Depender De Paquetes ¿Del SDK De Aleteo (Ej. Flutter_localizaciones). ¿Eso ¿Provoca ¿El Error "el Aleteo SDK Es No Disponible".
-    Solución: Uso ¿El SDK De Aleteo En ¿El Flujo de trabajo y ¿El ejecutar flutter pub get, flutter analyze, flutter test.
-
-Contenido completo que debes poner deses poner en .github/workflows/dart.yml (sobrescribe el archivo real)
-YAML
-
-name: Flutter CI
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      # Install Flutter SDK
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: 'stable' # o fijar una versión concreta como '3.10.6'
-
-      # Cache pub packages between runs
-      - name: Cache Pub packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.pub-cache
-            ~/.pub-cache/git
-          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pub-
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      # Optional: Verify formatting
-      # - name: Verify formatting
-      #   run: flutter format --output=none --set-exit-if-changed .
-
-      - name: Analyze project source
-        run: flutter analyze
-
-      - name: Run tests
-        run: flutter test
-
-Pasos para aplicación los cambios (opción A: desde máquina tu máquina local)
-
-    Clona/actualiza el repo y crea rama:
-        Git checkout principal
-        Git pull origen principal
-        git checkout -b fix/flutter-ci
-
-    Reemplaza .github/workflows/dart.yml con contenido el anterior (edítalo con tu editor).
-
-    Comprometer y empujar:
-        git add .github/workflows/dart.yml
-        git commit -m "CI: use Flutter SDK y ejecute flutter pub/analyze/test"
-        Git push origen fix/aleteador-ci
-
-    Abre un Pull Request en GitHub y mergea merea cuando pase CI.
-
-Pasos para aplicación los cambios (opción B: desde la interfaz web de GitHub)
-
-    Ve a https://github.com/reurobot/hola-entrega/blob/b63d1a83123e317b89c00e6650577b27f9dce2/.github/workflows/dart.yml
-    Haz click en el lápiz (editar), pega el contenido nuevo y crea una rama para la edición.
-    Crea PR y mergea.
-
-Verificación local (antes de push)
-
-    Si tienes Aleteo instalado localmente:
-        flutter pub get
-        Analizar el aleteo
-        Prueba de aleteo
-
-Notas y recomendaciones
-
-    Si tu app Aleteo está En un subdirectorio, añade working-directory: <ruta> a Los pasos relevantes (por ejemplo:
-        Carrera: flutter pub get Directorio de trabajo: app/).
-    Si confiner fijar una versión concreta de Flutter por por compatible con Flutter, reemplaza 'stable' por la versión (ej. '3.10.6') en la acción subosito/flutter-action@v2.
-    Si tus tests requieren requerimiento emuladores o configuración de Android SDK, pasos háx. adicionales (instalar licencias configurar Android, emulfigurador). Indícame si se ese es es el caso y te doy el YAML extendido.
-    El error que obtuve ofumento intentar al aplicar el el fue cambio un 403 “Recurso no accesible por integración”, lo lo que indica que que desde aquí no no tengos permisos de de escribir en el en el repo; por eso te eso te instrucciones las instrucciones para que para que los los con tu con aplicación tu cuenta (reurobot).
+5s
+Error detectado en pubspec.yaml:
+Error en la línea 73, columna 27: Los valores de asignación no están permitidos aquí. ¿Te perdiste un colon antes?
+   ╷
+73 │ change_app_package_name: ^1.5.0
+   │ ^
+   ╵
+Por favor, corrija el archivo pubspec.yaml en /home/runner/work/hola-entrega/hola-entrega/pubspec.yaml
+Error: Proceso completado con el código de salida 1.
+0s
 

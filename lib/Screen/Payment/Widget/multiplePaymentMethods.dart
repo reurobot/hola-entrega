@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../Helper/Color.dart';
-import '../../../Helper/String.dart';
 import '../../../Provider/CartProvider.dart';
 import '../../../widgets/desing.dart';
 
@@ -35,7 +34,8 @@ class _MultiplePaymentMethodsState extends State<MultiplePaymentMethods> {
   Widget build(BuildContext context) {
     return Consumer<CartProvider>(
       builder: (context, cartProvider, _) {
-        final totalAmount = cartProvider.totalPrice + cartProvider.deliveryCharge;
+        final totalAmount =
+            cartProvider.totalPrice + cartProvider.deliveryCharge;
         final totalPagado = cartProvider.paymentMethods.fold(
           0.0,
           (sum, method) => sum + (method['amount'] as double),
@@ -52,11 +52,11 @@ class _MultiplePaymentMethodsState extends State<MultiplePaymentMethods> {
                 Text(
                   'Métodos de pago',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 const SizedBox(height: 10),
-                
+
                 // Lista de métodos de pago agregados
                 if (cartProvider.paymentMethods.isNotEmpty) ...[
                   ListView.builder(
@@ -89,7 +89,9 @@ class _MultiplePaymentMethodsState extends State<MultiplePaymentMethods> {
                       });
                     },
                     icon: Icon(_showAddPayment ? Icons.remove : Icons.add),
-                    label: Text(_showAddPayment ? 'Cancelar' : 'Agregar método de pago'),
+                    label: Text(_showAddPayment
+                        ? 'Cancelar'
+                        : 'Agregar método de pago'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: colors.primary,
                       foregroundColor: Colors.white,
@@ -131,10 +133,12 @@ class _MultiplePaymentMethodsState extends State<MultiplePaymentMethods> {
     );
   }
 
-  Widget _buildPaymentItem(CartProvider cartProvider, Map<String, dynamic> payment, int index) {
+  Widget _buildPaymentItem(
+      CartProvider cartProvider, Map<String, dynamic> payment, int index) {
     final method = availableMethods.firstWhere(
       (m) => m['id'] == payment['method'],
-      orElse: () => {'id': payment['method'], 'name': payment['method'], 'icon': '💰'},
+      orElse: () =>
+          {'id': payment['method'], 'name': payment['method'], 'icon': '💰'},
     );
 
     return Container(
@@ -160,8 +164,8 @@ class _MultiplePaymentMethodsState extends State<MultiplePaymentMethods> {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  DesignConfiguration.getPriceFormat(context, payment['amount'])!,
- 
+                  DesignConfiguration.getPriceFormat(
+                      context, payment['amount'])!,
                 ),
               ],
             ),
@@ -181,7 +185,7 @@ class _MultiplePaymentMethodsState extends State<MultiplePaymentMethods> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: colors.primary.withOpacity(0.1),
+        color: colors.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -202,7 +206,8 @@ class _MultiplePaymentMethodsState extends State<MultiplePaymentMethods> {
     );
   }
 
-  Widget _buildSummaryRow(String label, double amount, {bool isBold = false, Color? color}) {
+  Widget _buildSummaryRow(String label, double amount,
+      {bool isBold = false, Color? color}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
@@ -298,7 +303,9 @@ class _MultiplePaymentMethodsState extends State<MultiplePaymentMethods> {
               return Text(
                 'Crédito disponible: ${DesignConfiguration.getPriceFormat(context, cartProvider.creditoDisponible)}',
                 style: TextStyle(
-                  color: cartProvider.creditoDisponible > 0 ? Colors.green : Colors.red,
+                  color: cartProvider.creditoDisponible > 0
+                      ? Colors.green
+                      : Colors.red,
                   fontSize: 12,
                 ),
               );
@@ -342,7 +349,8 @@ class _MultiplePaymentMethodsState extends State<MultiplePaymentMethods> {
       if (amount > cartProvider.creditoDisponible) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Monto excede el crédito disponible (${DesignConfiguration.getPriceFormat(context, cartProvider.creditoDisponible)})'),
+            content: Text(
+                'Monto excede el crédito disponible (${DesignConfiguration.getPriceFormat(context, cartProvider.creditoDisponible)})'),
           ),
         );
         return;
@@ -353,14 +361,15 @@ class _MultiplePaymentMethodsState extends State<MultiplePaymentMethods> {
     if (amount > cartProvider.totalPendiente) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Monto excede el total pendiente (${DesignConfiguration.getPriceFormat(context, cartProvider.totalPendiente)})'),
+          content: Text(
+              'Monto excede el total pendiente (${DesignConfiguration.getPriceFormat(context, cartProvider.totalPendiente)})'),
         ),
       );
       return;
     }
 
     cartProvider.addPaymentMethod(_selectedMethod!, amount);
-    
+
     setState(() {
       _showAddPayment = false;
       _amountController.clear();

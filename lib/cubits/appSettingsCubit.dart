@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:eshop_multivendor/repository/systemRepository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,16 +28,50 @@ class AppSettingsCubit extends Cubit<AppSettingsState> {
   fetchAndStoreAppSettings() async {
     emit(AppSettingsProgress());
     try {
+      log('Fetching app settings from API...', name: 'AppSettingsCubit');
       final response = await SystemRepository.fetchSystemSetting(parameter: {});
+      log('API response received: ${response != null ? 'success' : 'null'}',
+          name: 'AppSettingsCubit');
+
+      if (response == null) {
+        log('API response is null, using fallback', name: 'AppSettingsCubit');
+        _emitDefaultSettings();
+        return;
+      }
+
       if (!response['error']) {
+        log('Parsing successful response', name: 'AppSettingsCubit');
         emit(AppSettingsSuccess(
             appSettingsModel: AppSettingsModel.fromMap(response)));
+        log('App settings loaded successfully', name: 'AppSettingsCubit');
       } else {
+        log('API returned error: ${response['message']}',
+            name: 'AppSettingsCubit');
         emit(AppSettingsFailure(message: response['message']));
       }
-    } catch (e) {
-      emit(AppSettingsFailure(message: e.toString()));
+    } catch (e, stackTrace) {
+      log('Error fetching app settings: $e',
+          name: 'AppSettingsCubit', error: e);
+      log('Stack trace: $stackTrace',
+          name: 'AppSettingsCubit', error: stackTrace);
+      log('Using fallback default settings', name: 'AppSettingsCubit');
+      _emitDefaultSettings();
     }
+  }
+
+  void _emitDefaultSettings() {
+    final defaultModel = AppSettingsModel(
+      isAppleLoginAllowed: false,
+      isGoogleLoginAllowed: false,
+      isSMSGatewayActive: false,
+      isCityWiseDeliveribility: false,
+      androidLink: '',
+      iosLink: '',
+      appStoreId: '',
+      defaultCountryCode: 'MX',
+      userCountryCode: '',
+    );
+    emit(AppSettingsSuccess(appSettingsModel: defaultModel));
   }
 
   bool isGoogleLoginOn() {
